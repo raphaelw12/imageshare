@@ -41,7 +41,16 @@ Template.mainBody.helpers({
 		return imagesDB.find().count();
 	},
 	allImages(){
-		return imagesDB.find({}, {sort:{imgRate:-1}});
+		//Get time 15 seconds ago
+		var prevTime = new Date() - 1500;
+		var newReasults = imagesDB.find({"createdOn":{$gte:prevTime}}).count();
+		if (newReasults > 0) {
+			//if new images are found then sort by data first then ratings
+				return imagesDB.find({}, {sort:{createdOnP:1, imgRate:-1}});
+		}	else{
+		//else sort by rating then date
+			return imagesDB.find({}, {sort:{imgRate:-1, createdOn:1}});
+		}
 	}
 });
 
